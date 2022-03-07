@@ -11,11 +11,11 @@ jobs:
       - name: Build image
         run: |
           docker build -t image .
-      
+
       - name: Login to GitHub Container Registry
         run: |
           echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ secrets.CR_USER }} --password-stdin
-      
+
       - name: Push latest build
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         run: |
@@ -23,13 +23,13 @@ jobs:
           docker tag image ghcr.io/linuxserver/heimdalljs:master-${{ github.sha }}
           docker push ghcr.io/linuxserver/heimdalljs:latest
           docker push ghcr.io/linuxserver/heimdalljs:master-${{ github.sha }}
-      
+
       - name: Push dev commit build
         if: ${{ github.event_name == 'push' && github.ref != 'refs/heads/master' }}
         run: |
           docker tag image ghcr.io/linuxserver/heimdalljs:${GITHUB_REF##*/}-${{ github.sha }}
           docker push ghcr.io/linuxserver/heimdalljs:${GITHUB_REF##*/}-${{ github.sha }}
-      
+
       - name: Push PR build
         if: ${{ github.event_name == 'pull_request' }}
         run: |
